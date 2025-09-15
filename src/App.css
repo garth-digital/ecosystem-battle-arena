@@ -1,0 +1,132 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #18191a;
+  color: #f3f3f3;
+  margin: 0;
+  padding: 0;
+}
+
+h3, h2, h1 {
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+
+.inventory-section {
+  margin: 16px auto 0 auto;
+  max-width: 900px;
+  padding: 8px 8px 16px 8px;
+  background: #23272f;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+
+.inventory-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 80px;
+  background: #18191a;
+  border-radius: 8px;
+  padding: 12px 8px;
+  min-width: 600px;
+  min-height: 100px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.inventory-slot {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inventory-empty {
+  color: #aaa;
+  font-size: 1.1em;
+  padding: 24px 0;
+}
+
+.bot-area {
+  display: flex;
+  gap: 24px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.bot-card {
+  background: #23272f;
+  border-radius: 10px;
+  padding: 18px 16px;
+  min-width: 120px;
+  min-height: 120px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bot-card--add {
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 2px dashed #444;
+  color: #888;
+  font-size: 2.2em;
+  transition: border 0.2s;
+}
+
+.bot-card--add:hover {
+  border: 2px solid #4caf50;
+  color: #4caf50;
+}
+
+.bot-summary-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.bot-summary-wt {
+  font-size: 0.95em;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+
+.bot-summary-parts {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.bot-part-bar {
+  background: #18191a;
+  border-radius: 6px;
+  margin: 2px 0;
+  padding: 4px 8px;
+  font-size: 0.95em;
+  color: #eee;
+}
+
+.bot-summary-actions {
+  margin-top: 8px;
+}
+
+button {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 16px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-right: 8px;
+  margin-bottom: 4px;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #388e3c;
+}

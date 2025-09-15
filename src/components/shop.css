@@ -1,0 +1,446 @@
+.bot-summary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  width: 100%;
+  align-items: stretch;
+}
+.bot-action-btn {
+  background: #232323;
+  color: #ffe082;
+  border: 1.5px solid #ffe082;
+  border-radius: 6px;
+  font-size: 0.95em;
+  font-weight: 600;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.bot-action-btn:hover {
+  background: #ffe082;
+  color: #232323;
+}
+.app-container {
+  background: #111;
+  min-height: 100vh;
+  color: #fff;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+
+.shop-grid-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 2rem 0;
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 90px;
+  grid-template-rows: repeat(3, 1fr) 70px;
+  gap: 18px;
+  background: none;
+  position: relative;
+}
+
+.shop-grid__cell {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Reroll buttons */
+.reroll-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 60px;
+  margin: 0;
+  border: 2px solid #333;
+  border-radius: 10px;
+  background: #19191c;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px #000a;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  outline: none;
+}
+.reroll-btn--mythic {
+  border-color: #ffe066;
+  color: #ffe066;
+}
+.reroll-btn--rare {
+  border-color: #a259ff;
+  color: #a259ff;
+}
+.reroll-btn--common {
+  border-color: #bfcfff;
+  color: #bfcfff;
+}
+.reroll-btn--frame {
+  border-color: #bfcfff;
+}
+.reroll-btn--armor {
+  border-color: #22c55e;
+}
+.reroll-btn--weapon {
+  border-color: #3b82f6;
+}
+.reroll-btn--all {
+  border-radius: 50% 50% 0 50%;
+  background: #232323;
+  border-color: #fff;
+  color: #fff;
+  width: 90px;
+  height: 70px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  position: relative;
+  left: 8px;
+}
+.reroll-btn--locked {
+  background: #18181b;
+  border: 2px dashed #555;
+  color: #888;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.shop-gold-display {
+  background: #232323;
+  border-radius: 10px;
+  border: 2px solid #ffe066;
+  min-width: 70px;
+  min-height: 50px;
+  box-shadow: 0 2px 8px #0002;
+  padding: 6px 0 2px 0;
+  text-align: center;
+  user-select: none;
+}
+.reroll-btn:hover {
+  background: #23233a;
+  border-color: #3b82f6;
+}
+
+.shop-card {
+  background: #18181b;
+  border: 2px solid #333;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #000a;
+  width: 170px;
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 8px 6px 8px;
+  position: relative;
+  transition: border-color 0.2s;
+  user-select: none;
+}
+.shop-card--selected {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px #3b82f6aa;
+}
+.shop-card--small {
+  width: 90px;
+  height: 90px;
+  font-size: 0.8em;
+  padding: 4px 4px 2px 4px;
+}
+.inventory-section {
+  margin: 2rem 0 0 0;
+  width: 100%;
+  max-width: 700px;
+}
+.inventory-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0;
+  min-height: 200px;
+  background: #18181b;
+  border-radius: 10px;
+  border: 1.5px solid #232323;
+}
+
+/* Bot area grid */
+.bot-area-section {
+  margin-top: 32px;
+}
+.bot-list-grid {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  align-items: flex-start;
+}
+.bot-card {
+  background: #181a1e;
+  border: 1.5px solid #444;
+  border-radius: 8px;
+  min-width: 110px;
+  max-width: 120px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 0 2px 8px #0002;
+  margin: 0 2px;
+  position: relative;
+}
+.bot-card--battle {
+  min-width: 90px;
+  max-width: 90px;
+  min-height: 110px;
+  border: 1.5px solid #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111319;
+}
+.bot-battle-btn {
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bot-card--add {
+  min-width: 90px;
+  max-width: 90px;
+  min-height: 110px;
+  border: 1.5px dashed #444;
+  background: #111319;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.bot-add-plus {
+  color: #888;
+  font-size: 2.2em;
+  font-weight: 700;
+  text-align: center;
+  user-select: none;
+}
+.bot-card--summary {
+  min-width: 110px;
+  max-width: 120px;
+  min-height: 120px;
+  background: #23272e;
+  border: 1.5px solid #ffe082;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 6px 6px 6px;
+}
+.bot-summary-title {
+  color: #fff;
+  font-size: 1em;
+  font-weight: 700;
+  margin-bottom: 2px;
+  text-align: center;
+}
+.bot-summary-wt {
+  color: #ffe082;
+  font-size: 0.95em;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.bot-summary-parts {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 2px;
+}
+.bot-part-bar {
+  height: 14px;
+  border-radius: 3px;
+  margin: 0 0 0 0;
+  width: 100%;
+  opacity: 0.95;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  position: relative;
+}
+.bot-part-bar__label {
+  font-size: 0.68em;
+  color: #fff;
+  opacity: 0.95;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+  pointer-events: none;
+}
+.bot-part-bar--frame {
+  background: #aee1f9;
+}
+.bot-part-bar--weapon {
+  background: #b71c1c;
+}
+.bot-part-bar--armour {
+  background: #00e676;
+}
+.bot-part-bar--ecotech {
+  background: #29b6f6;
+}
+.inventory-slot {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.inventory-item {
+  width: 90px;
+  height: 90px;
+  background: #232323;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9em;
+  text-align: center;
+}
+.inventory-empty {
+  color: #888;
+  grid-column: 1 / span 6;
+  align-self: center;
+}
+.shop-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.shop-card__type {
+  font-size: 0.85rem;
+  color: #aaa;
+  background: #232323;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: 600;
+}
+.shop-card__rarity {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.shop-card__cost {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffe066;
+  display: flex;
+  align-items: center;
+}
+.shop-card__image {
+  height: 70px;
+  background: #222;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shop-card__placeholder {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(135deg, #222 0 10px, #191919 10px 20px);
+  border-radius: 8px;
+}
+.shop-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.shop-card__name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.shop-card__desc {
+  font-size: 0.95rem;
+  color: #bfcfff;
+  margin-bottom: 6px;
+  font-style: italic;
+}
+.shop-card__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 4px;
+}
+.shop-card__stat {
+  font-size: 0.9rem;
+  color: #fff;
+  background: #232323;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.shop-card__size {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-top: 2px;
+}
+.shop-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.shop-card__buy-btn {
+  background: linear-gradient(90deg, #3b82f6 0%, #a259ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.shop-card__buy-btn:hover {
+  background: linear-gradient(90deg, #a259ff 0%, #3b82f6 100%);
+}
+.currency {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  margin-right: 4px;
+  background: #ffe066;
+}
+.currency--crystal {
+  background: #3b82f6;
+}
+.currency--heart {
+  background: #22c55e;
+}
