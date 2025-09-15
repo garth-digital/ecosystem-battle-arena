@@ -2,7 +2,7 @@
 
 A dynamic ecosystem simulation where you can deploy AI bots that interact with prey, predators, and plants in a living environment!
 
-## 🎮 How to Play
+## How to Play
 
 1. **Click "Start Battle"** to begin the simulation
 2. **Select a Bot Type** from the left panel:
@@ -15,14 +15,14 @@ A dynamic ecosystem simulation where you can deploy AI bots that interact with p
 4. **Watch the Ecosystem** evolve with prey, predators, and your bots
 5. **Adjust Parameters** with the sliders to change breeding speed, mutation rate, and food growth
 
-## 🎯 Game Elements
+## Game Elements
 
 - **🟢 Green Dots** - Prey animals that flee from predators and eat plants
 - **🔴 Red Dots** - Predators that hunt prey and roam when hungry
 - **🟤 Small Dots** - Plants that grow randomly and feed the ecosystem
-- **🤖 Colored Bots** - Your deployed AI units with different behaviors
+- ** Colored Bots** - Your deployed AI units with different behaviors
 
-## 🛠️ Development Setup
+##  Development Setup
 
 ```bash
 # Clone the repository
@@ -42,12 +42,12 @@ npm run build
 npm run preview
 ```
 
-## 🚀 Live Deployment
+## Live Deployment
 
 This project automatically deploys to GitHub Pages when you push to the main branch.
 Your live version will be available at: `https://yourusername.github.io/ecosystem-bot-arena/`
 
-## 🎯 Features
+## Features
 
 - **Real-time Ecosystem Simulation** with complex predator-prey dynamics
 - **4 Unique Bot Types** with distinct AI behaviors and visual indicators
@@ -55,32 +55,6 @@ Your live version will be available at: `https://yourusername.github.io/ecosyste
 - **Dynamic Parameters** - adjust ecosystem settings with sliders
 - **Visual Feedback** - see bot types, energy levels, and behavior patterns
 - **Responsive Design** - works on different screen sizes
-
-## 🤖 Using AI Tools for Development
-
-### Claude (Anthropic) - Perfect for:
-- Code reviews and debugging
-- Adding new bot behaviors and AI logic
-- Implementing complex game features
-- Performance optimization
-
-**Example prompts:**
-- *"Help me add a new 'medic bot' that heals other bots within range"*
-- *"Make predators form hunting packs of 2-3 individuals"*
-- *"Add particle effects when bots fight predators"*
-- *"Optimize the collision detection for better performance"*
-
-### GitHub Copilot - Great for:
-- Auto-completing repetitive code patterns
-- Suggesting implementation approaches
-- Writing test cases and documentation
-
-### ChatGPT/GPT-4 - Useful for:
-- Brainstorming new game mechanics and features
-- Explaining complex algorithms and concepts
-- Writing clear documentation and tutorials
-
-## 📝 Adding New Features
 
 ### Adding a New Bot Type
 1. Update `getBotConfig()` in `src/main.js`
@@ -94,7 +68,7 @@ Your live version will be available at: `https://yourusername.github.io/ecosyste
 3. Handle interactions in `handleInteractions()`
 4. Add rendering logic in `render()` method
 
-## 🎨 Customization Ideas
+## Customization Ideas
 
 **New Bot Types:**
 - **Medic Bot** - Heals nearby friendly bots
@@ -120,28 +94,28 @@ Your live version will be available at: `https://yourusername.github.io/ecosyste
 - **Spectator Mode** - Watch others play
 - **Team Battles** - Coordinate with allies
 
-## 🐛 Common Issues & Solutions
+## Common Issues & Solutions
 
-**🔧 Bots not moving?**
+** Bots not moving?**
 - Check that the simulation is started (click "Start Battle")
 - Make sure you've selected a bot type before clicking
 
-**🔧 Canvas appears blank?**
+** Canvas appears blank?**
 - Refresh the page (F5)
 - Check browser console for errors (F12)
 - Ensure JavaScript is enabled
 
-**🔧 Deployment not working?**
+** Deployment not working?**
 - Verify GitHub Pages is enabled in repository settings
 - Check that the workflow file is in `.github/workflows/`
 - Ensure main branch has the latest code
 
-**🔧 Performance issues?**
+** Performance issues?**
 - Try reducing the number of entities
 - Lower the breeding speed slider
 - Close other browser tabs
 
-## 🎯 Game Strategy Tips
+## Game Strategy Tips
 
 - **Hunter Bots** are great for controlling predator populations
 - **Defender Bots** create safe zones in the center
@@ -150,11 +124,11 @@ Your live version will be available at: `https://yourusername.github.io/ecosyste
 - **Balance** different bot types for optimal ecosystem control
 - **Watch the stats** to see how your interventions affect the ecosystem
 
-## 📜 License
+## License
 
 MIT License - Feel free to modify, share, and use this project however you'd like!
 
-## 🌟 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b amazing-feature`)
@@ -170,6 +144,5 @@ MIT License - Feel free to modify, share, and use this project however you'd lik
 
 ---
 
-**Have fun building your bot army and controlling the ecosystem! 🤖⚔️🌿**
+**Have fun building your bot army and controlling the ecosystem!**
 
-*Made with ❤️ and AI assistance*
