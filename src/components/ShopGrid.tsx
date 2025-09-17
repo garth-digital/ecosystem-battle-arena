@@ -1,7 +1,23 @@
+// Helper to map ShopCardProps to InventoryItem
+const mapShopCardToInventory = (item: ShopCardProps): InventoryItem => ({
+  id: `${item.name}-${item.rarity}-${item.type}`,
+  name: item.name,
+  description: item.description,
+  rarity: item.rarity,
+  type: (item.type.toLowerCase() as InventoryItem['type']) || 'frame',
+  cost: item.cost,
+  currency: item.currency,
+  stats: item.stats || [],
+  size: item.size,
+  highlight: item.highlight,
+});
 
 import React from 'react';
 import ShopCard, { ShopCardProps } from './ShopCard';
-import { InventoryItem } from '../App';
+import { InventoryItem, SellableItem } from '../App';
+import './shop.css';
+import './shopButtons.css';
+import './shopCards.css';
 
 type ShopGridItem = ShopCardProps | { blank: true };
 
@@ -158,85 +174,198 @@ type ShopGridProps = {
   };
   onUnlock: (key: keyof ShopGridProps['unlocked']) => void;
   onReroll: (type: string) => void;
-  onSell: (item: InventoryItem) => void;
-  onSellBot: (botIdx: number) => void;
+  onSell: (item: SellableItem) => void;
 };
 
-const mapShopCardToInventory = (item: ShopCardProps): InventoryItem => ({
-  id: `${item.name}-${item.rarity}-${item.type}`,
-  name: item.name,
-  description: item.description,
-  rarity: item.rarity,
-  type: (item.type.toLowerCase() as InventoryItem['type']) || 'frame',
-  cost: item.cost,
-  currency: item.currency,
-  stats: item.stats || [],
-  size: item.size,
-  highlight: item.highlight,
-});
-
-
-const ShopGrid: React.FC<ShopGridProps> = ({ onPurchase, shopItems, gold, unlocked, onUnlock, onReroll, onSell, onSellBot }) => {
+const ShopGrid: React.FC<ShopGridProps> = ({ onPurchase, shopItems, gold, unlocked, onUnlock, onReroll, onSell }) => {
   // Helper to render a locked reroll button
-  const lockedBtn = (label: string, key: keyof typeof unlocked, style: React.CSSProperties) => (
-    <button className="reroll-btn reroll-btn--locked" style={style} onClick={() => onUnlock(key)}>
-      <span role="img" aria-label="locked">🔒</span><br/>
-      Unlock<br/>10g
+  const CoinIcon = ({size=22,stroke=3,color='var(--color-gold)'}: {size?:number,stroke?:number,color?:string}) => (
+    <svg width={size} height={size} viewBox="0 0 32 32" style={{verticalAlign:'middle'}}>
+      <circle cx="16" cy="16" r="13" fill="none" stroke={color} strokeWidth={stroke} />
+    </svg>
+  );
+
+  const RerollIcon = ({size=22, color="#444"}: {size?:number, color?:string}) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" style={{display:'block',margin:'0 auto'}}>
+      <path d="M12 4V1L7 6l5 5V7c3.31 0 6 2.69 6 6 0 1.3-.42 2.5-1.13 3.47" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+
+  const lockedBtn = (label: string, key: keyof typeof unlocked, style: React.CSSProperties, reactKey?: string) => (
+    <button
+      className="reroll-btn reroll-btn--locked"
+      style={style}
+      onClick={() => onUnlock(key)}
+      key={reactKey}
+    >
+      <span className="coin-badge"><span className="coin-badge__bg" /><span className="coin-badge__amount">10</span></span>
+      <div className="reroll-btn__lock-flex">
+        <span role="img" aria-label="locked" style={{fontSize:20,opacity:0.7,filter:'drop-shadow(0 1px 2px #0008)'}}>🔒</span>
+        <span className="reroll-btn__label" style={{opacity:0.7}}>{label}</span>
+      </div>
     </button>
   );
+
+  // Always show 9 cells in the grid (3x3 block)
+  const gridItems = shopItems.slice(0, 9);
+  while (gridItems.length < 9) gridItems.push({ blank: true });
 
   return (
     <div className="shop-grid-wrapper">
       <div className="shop-grid">
-        {shopItems.map((item, idx) => (
-          <div className="shop-grid__cell" key={idx}>
-            {'blank' in item && item.blank ? (
-              <div style={{ width: '100%', height: '100%', background: 'rgba(80,80,80,0.15)', borderRadius: 8 }} />
-            ) : (
-              <ShopCard
-                {...item as ShopCardProps}
-                onClick={(item as ShopCardProps).name ? () => onPurchase(mapShopCardToInventory(item as ShopCardProps), (item as ShopCardProps).cost) : undefined}
-                draggable={!!(item as ShopCardProps).name}
-                onDragStart={(item as ShopCardProps).name ? (e) => { e.dataTransfer.setData('application/json', JSON.stringify(mapShopCardToInventory(item as ShopCardProps))); } : undefined}
-              />
-            )}
-          </div>
-        ))}
-        {/* 3 vertical reroll buttons (right of grid) */}
-        {unlocked.mythic
-          ? <button className="reroll-btn reroll-btn--mythic" style={{ gridRow: 1, gridColumn: 4 }} onClick={() => onReroll('mythic')}>Mythic<br/>10g</button>
-          : lockedBtn('Mythic', 'mythic', { gridRow: 1, gridColumn: 4 })}
-        {unlocked.rare
-          ? <button className="reroll-btn reroll-btn--rare" style={{ gridRow: 2, gridColumn: 4 }} onClick={() => onReroll('rare')}>Rare<br/>10g</button>
-          : lockedBtn('Rare', 'rare', { gridRow: 2, gridColumn: 4 })}
-        {/* Common is now reroll all */}
-        <button className="reroll-btn reroll-btn--common" style={{ gridRow: 3, gridColumn: 4 }} onClick={() => onReroll('all')}>Reroll All<br/>5g</button>
-        {/* 3 horizontal reroll buttons (below grid) */}
-        {unlocked.frame
-          ? <button className="reroll-btn reroll-btn--frame" style={{ gridRow: 4, gridColumn: 1 }} onClick={() => onReroll('frame')}>Frame<br/>10g</button>
-          : lockedBtn('Frame', 'frame', { gridRow: 4, gridColumn: 1 })}
-        {unlocked.armour
-          ? <button className="reroll-btn reroll-btn--armor" style={{ gridRow: 4, gridColumn: 2 }} onClick={() => onReroll('armour')}>Armour<br/>10g</button>
-          : lockedBtn('Armour', 'armour', { gridRow: 4, gridColumn: 2 })}
-        {unlocked.weapon
-          ? <button className="reroll-btn reroll-btn--weapon" style={{ gridRow: 4, gridColumn: 3 }} onClick={() => onReroll('weapon')}>Weapon<br/>10g</button>
-          : lockedBtn('Weapon', 'weapon', { gridRow: 4, gridColumn: 3 })}
-        {/* Gold display in bottom right */}
+        {/* 3x3 shop cards in top-left */}
+        {gridItems.map((item, idx) => {
+          const row = Math.floor(idx / 3) + 1;
+          const col = (idx % 3) + 1;
+          // Use a unique key for each cell
+          let key = `cell-${idx}`;
+          if ('name' in item && item.name) {
+            key = `cell-${idx}-${item.name}-${item.type}-${item.rarity}`;
+          } else if ('blank' in item && item.blank) {
+            key = `cell-${idx}-blank`;
+          }
+          return (
+            <div
+              className="shop-grid__cell"
+              key={key}
+              style={{ gridRow: row, gridColumn: col }}
+            >
+              {'blank' in item && item.blank ? (
+                <div style={{ width: '100%', height: '100%', background: 'rgba(80,80,80,0.15)', borderRadius: 8 }} />
+              ) : (
+                <ShopCard
+                  {...item as ShopCardProps}
+                  onClick={(item as ShopCardProps).name ? () => onPurchase(mapShopCardToInventory(item as ShopCardProps), (item as ShopCardProps).cost) : undefined}
+                  draggable={!!(item as ShopCardProps).name}
+                  onDragStart={(item as ShopCardProps).name ? (e) => { e.dataTransfer.setData('application/json', JSON.stringify(mapShopCardToInventory(item as ShopCardProps))); } : undefined}
+                />
+              )}
+            </div>
+          );
+        })}
+        {/* Vertical buttons in rightmost column (col 4, rows 1-3) */}
+        {([
+          ['mythic', 1],
+          ['rare', 2],
+          ['all', 3]
+        ] as [string, number][]).map(([type, row], i) => {
+          const key = `vertical-btn-${type}-${row}`;
+          if (type === 'all') {
+            return (
+              <button
+                key={key}
+                className="reroll-btn reroll-btn--common reroll-btn--vertical"
+                style={{ gridRow: row, gridColumn: 4 }}
+                onClick={() => onReroll('all')}
+              >
+                <span className="coin-badge"><span className="coin-badge__bg" /><span className="coin-badge__amount">5</span></span>
+                <span style={{display:'block',marginTop:24,marginBottom:2}}><RerollIcon size={18} color="#444" /></span>
+                <span className="reroll-btn__label reroll-btn__label--centered">ALL</span>
+              </button>
+            );
+          }
+          const unlockedKey = type as keyof typeof unlocked;
+          const label = (type as string).toUpperCase();
+          return unlocked[unlockedKey]
+            ? (
+                <button
+                  key={key}
+                  className={`reroll-btn reroll-btn--${type} reroll-btn--vertical`}
+                  style={{ gridRow: row, gridColumn: 4 }}
+                  onClick={() => onReroll(type as string)}
+                >
+                  <span className="coin-badge"><span className="coin-badge__bg" /><span className="coin-badge__amount">10</span></span>
+                  <RerollIcon size={18} color="#444" />
+                  <span className="reroll-btn__label">{label}</span>
+                </button>
+              )
+            : (
+                <button
+                  className="reroll-btn reroll-btn--locked reroll-btn--vertical"
+                  style={{ gridRow: row, gridColumn: 4 }}
+                  onClick={() => onUnlock(unlockedKey)}
+                  key={key}
+                >
+                  <span className="coin-badge"><span className="coin-badge__bg" /><span className="coin-badge__amount">10</span></span>
+                  <span role="img" aria-label="locked" style={{fontSize:20,opacity:0.7,filter:'drop-shadow(0 1px 2px #0008)'}}>🔒</span>
+                  <span className="reroll-btn__label" style={{opacity:0.7}}>{label}</span>
+                </button>
+              );
+        })}
+        {/* Horizontal buttons in bottom row, columns 1-3 */}
+        {([
+          ['frame', 1],
+          ['armour', 2],
+          ['weapon', 3]
+        ] as [string, number][]).map(([type, col], i) => {
+          const key = `horizontal-btn-${type}-${col}`;
+          const unlockedKey = type as keyof typeof unlocked;
+          const label = (type as string).toUpperCase();
+          return unlocked[unlockedKey]
+            ? (
+                <button
+                  key={key}
+                  className={`reroll-btn reroll-btn--${type} reroll-btn--horizontal`}
+                  style={{ gridRow: 4, gridColumn: col, position:'relative', padding:'0' }}
+                  onClick={() => onReroll(type as string)}
+                >
+                  <span className="coin-badge"><span className="coin-badge__bg" /><span className="coin-badge__amount">10</span></span>
+                  <div className="reroll-btn__lock-flex" style={{display:'flex',justifyContent:'center',alignItems:'center',gap:8}}>
+                    <RerollIcon size={18} color="#fff" />
+                    <span className="reroll-btn__label">{label}</span>
+                  </div>
+                </button>
+              )
+            : lockedBtn(label, unlockedKey, { gridRow: 4, gridColumn: col, position:'relative', padding:'0' }, key);
+        })}
+        {/* Gold display in bottom right (row 4, col 4) */}
         <div
           className="shop-gold-display"
-          style={{ gridRow: 4, gridColumn: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#ffe066', fontSize: '1.2em' }}
+          style={{ 
+            gridRow: 4, 
+            gridColumn: 4, 
+            display: 'flex', 
+            flexDirection: 'row', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            fontWeight: 700, 
+            color: 'var(--color-gold)', 
+            fontSize: '1.2em', 
+            height: 64,
+            width: 64,
+            transition: 'background-color 0.2s',
+            borderRadius: 6
+          }}
           onDragOver={e => {
             if (e.dataTransfer.types.includes('application/json') || e.dataTransfer.types.includes('application/bot')) {
               e.preventDefault();
+              e.currentTarget.setAttribute('data-dragging', 'true');
             }
           }}
+          onDragLeave={e => {
+            e.currentTarget.setAttribute('data-dragging', 'false');
+          }}
           onDrop={e => {
+            e.currentTarget.setAttribute('data-dragging', 'false');
             if (e.dataTransfer.types.includes('application/bot')) {
               const data = e.dataTransfer.getData('application/bot');
               if (!data) return;
-              const { botIdx } = JSON.parse(data);
-              onSellBot(botIdx);
-              return;
+              try {
+                const { id, botWithParts } = JSON.parse(data);
+                // Calculate total value of all parts
+                let total = 0;
+                botWithParts.slots.forEach((slot: any) => {
+                  if (slot.part && slot.part.cost) {
+                    total += slot.part.cost;
+                  }
+                });
+                onSell({
+                  id,
+                  cost: total,
+                  type: 'bot'
+                });
+                return;
+              } catch {}
             }
             const data = e.dataTransfer.getData('application/json');
             if (!data) return;
@@ -246,8 +375,10 @@ const ShopGrid: React.FC<ShopGridProps> = ({ onPurchase, shopItems, gold, unlock
             } catch {}
           }}
         >
-          <span>Gold</span>
-          <span>{gold}</span>
+          <span style={{display:'flex',alignItems:'center',gap:6}}>
+            <CoinIcon size={20} stroke={2.5} />
+            <span style={{color:'var(--color-gold)',fontWeight:700}}>{gold}</span>
+          </span>
         </div>
       </div>
     </div>

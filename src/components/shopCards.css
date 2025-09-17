@@ -1,0 +1,117 @@
+/* Card border and label styles moved from shop.css */
+.shop-card--rare {
+  border-color: var(--color-border-rare);
+}
+.shop-card--mythic {
+  border-color: var(--color-border-mythic);
+}
+.shop-card--common {
+  border-color: var(--color-border-common);
+}
+.shop-card__type-label {
+  font-size: 0.8em;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 8px;
+  margin-bottom: 2px;
+  margin-left: -2px;
+  margin-top: 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 1px 2px #0002;
+}
+.shop-card__weight-box {
+  position: absolute;
+  left: 6px;
+  bottom: 4px;
+  font-size: 0.8em;
+  background: #232323;
+  color: #ffe066;
+  border-radius: 3px;
+  padding: 0 4px;
+  font-weight: 700;
+  opacity: 0.95;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+/* Shop Card Styles (shop-card, shop-card__*, etc.) */
+
+.shop-card {
+  border-radius: 8px;
+  border: 2.5px solid var(--color-border-common);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  font-size: 0.9em;
+  font-weight: 600;
+  box-sizing: border-box;
+  position: relative;
+  padding: 6px 6px 4px 6px;
+  gap: 2px;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  min-width: 110px;
+  min-height: 110px;
+  max-width: 120px;
+  max-height: 120px;
+  margin: 0 2px 8px 0;
+  transition: border-color 0.2s, background 0.2s;
+}
+.shop-card--rare {
+  border-color: var(--color-border-rare);
+}
+.shop-card--mythic {
+  border-color: var(--color-border-mythic);
+}
+.shop-card--common {
+  border-color: var(--color-border-common);
+}
+.shop-card__type-label {
+  font-size: 0.8em;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 8px;
+  margin-bottom: 2px;
+  margin-left: -2px;
+  margin-top: 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 1px 2px #0002;
+}
+.shop-card__name {
+  font-size: 1em;
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+}
+.shop-card__desc {
+  font-size: 0.85em;
+  color: #bbb;
+  margin-bottom: 2px;
+  white-space: normal;
+  word-break: break-word;
+}
+.shop-card__stats {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  margin-top: 2px;
+}
+.shop-card__stat {
+  font-size: 0.8em;
+  color: #ffe066;
+  background: #232323;
+  border-radius: 3px;
+  padding: 0 4px;
+  font-weight: 700;
+  opacity: 0.95;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}

@@ -10,6 +10,12 @@ import './components/shop.css';
 import './App.css';
 
 // ...removed duplicate InventoryItem type...
+export type SellableItem = {
+  id: string;
+  type: 'frame' | 'weapon' | 'armour' | 'ecotech' | 'bot';
+  cost: number;
+};
+
 export type InventoryItem = {
   id: string;
   name: string;
@@ -30,24 +36,7 @@ const App: React.FC = () => {
   const REROLL_TYPE_COST = 10;
   const initialInventory: InventoryItem[] = [];
   // Example starter bots
-  const initialBots: any[] = [
-    {
-      id: 'bot-1',
-      name: 'Bot 1',
-      frame: ITEM_POOL.find(i => i.type === 'frame' && i.rarity === 'common'),
-      weapon: ITEM_POOL.find(i => i.type === 'weapon' && i.rarity === 'common'),
-      armour: ITEM_POOL.find(i => i.type === 'armour' && i.rarity === 'common'),
-      ecotech: undefined
-    },
-    {
-      id: 'bot-2',
-      name: 'Bot 2',
-      frame: ITEM_POOL.find(i => i.type === 'frame' && i.rarity === 'mythic'),
-      weapon: undefined,
-      armour: undefined,
-      ecotech: undefined
-    }
-  ];
+  const initialBots: any[] = [];  // Start with no bots
 
   const [gold, setGold] = useState(200);
   const [inventory, setInventory] = useState<InventoryItem[]>(initialInventory);
@@ -67,7 +56,7 @@ const App: React.FC = () => {
   const [round, setRound] = useState(1);
   const [health, setHealth] = useState(100);
   const [armor, setArmor] = useState(50);
-  const [view, setView] = useState<'shop' | 'arena'>('shop');
+
 
   // Handler implementations
   const handlePurchase = (item: any, cost: number) => {
@@ -135,10 +124,9 @@ const App: React.FC = () => {
   };
 
   return (
-    <>
-      <PlayerInfoBar round={round} health={health} armor={armor} view={view} setView={setView} />
-      {view === 'arena' && <ArenaCanvas bots={bots} />}
-      {view === 'shop' && (
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', width: '100%', minHeight: '100vh', background: '#16161a' }}>
+      <div style={{ width: 650, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+        <PlayerInfoBar round={round} health={health} armor={armor} />
         <ShopGrid
           shopItems={shopItems}
           onPurchase={handlePurchase}
@@ -146,69 +134,48 @@ const App: React.FC = () => {
           gold={gold}
           unlocked={unlocked}
           onUnlock={handleUnlock}
-          onSell={(item) => {
-            setInventory(inv => inv.filter(i => i.id !== item.id));
-            setGold(g => g + (item.cost || 1));
-          }}
-          onSellBot={(botIdx) => {
-            setBots(prev => {
-              const bot = prev[botIdx];
-              if (!bot) return prev;
-              let total = 0;
-              ['frame', 'weapon', 'armour', 'ecotech'].forEach(slot => {
-                if (bot[slot] && bot[slot].cost) total += bot[slot].cost;
-              });
-              setGold(g => g + total);
-              return prev.filter((_, i) => i !== botIdx);
-            });
+          onSell={(item: SellableItem) => {
+            if (item.type === 'bot') {
+              setBots(prev => prev.filter(b => b.id !== item.id));
+              setGold(g => g + item.cost);
+            } else {
+              setInventory(inv => inv.filter(i => i.id !== item.id));
+              setGold(g => g + (item.cost || 1));
+            }
           }}
         />
-      )}
-      <BotArea bots={bots} handleDropOnBot={handleDropOnBot} setBots={setBots} setInventory={setInventory} />
-      <InventoryGrid
-        inventory={inventory}
-        onDragStart={(item, e) => {
-          e.dataTransfer.setData('application/json', JSON.stringify(item));
-        }}
-      />
-    </>
+        <InventoryGrid
+          inventory={inventory}
+          onDragStart={(item, e) => {
+            e.dataTransfer.setData('application/json', JSON.stringify(item));
+          }}
+          onDropFromShop={(item) => {
+            // Only add if not already in inventory
+            if (inventory.some(i => i.id === item.id)) return;
+            // Find the item in shopItems
+            const shopIdx = shopItems.findIndex(s => !('blank' in s) && s.id === item.id);
+            if (shopIdx === -1) return;
+            // Check gold
+            if (gold < item.cost) {
+              alert('Not enough gold!');
+              return;
+            }
+            setGold(gold - item.cost);
+            setInventory([...inventory, item]);
+            setShopItems(shopItems => shopItems.map((s, i) => i === shopIdx ? { blank: true } : s));
+          }}
+          setBots={setBots}
+          setInventory={setInventory}
+        />
+  <BotArea bots={bots} setBots={setBots} setInventory={setInventory} />
+      </div>
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: 650 }}>
+        <ArenaCanvas bots={bots} />
+      </div>
+    </div>
   );
 
 // ...existing code...
-
-                  return (
-                    <>
-                      <PlayerInfoBar round={round} health={health} armor={armor} view={view} setView={setView} />
-                      {view === 'arena' && <ArenaCanvas bots={bots} />}
-                      {view === 'shop' && (
-                        <ShopGrid
-                          shopItems={shopItems}
-                          onPurchase={handlePurchase}
-                          onReroll={handleReroll}
-                          gold={gold}
-                          unlocked={unlocked}
-                          onUnlock={handleUnlock}
-                          onSell={(item) => {
-                            setInventory(inv => inv.filter(i => i.id !== item.id));
-                            setGold(g => g + (item.cost || 1));
-                          }}
-                          onSellBot={(botIdx) => {
-                            setBots(prev => {
-                              const bot = prev[botIdx];
-                              if (!bot) return prev;
-                              let total = 0;
-                              ['frame', 'weapon', 'armour', 'ecotech'].forEach(slot => {
-                                if (bot[slot] && bot[slot].cost) total += bot[slot].cost;
-                              });
-                              setGold(g => g + total);
-                              return prev.filter((_, i) => i !== botIdx);
-                            });
-                          }}
-                        />
-                      )}
-                      <BotArea bots={bots} handleDropOnBot={handleDropOnBot} setBots={setBots} setInventory={setInventory} />
-                    </>
-                  );
 }
 
 export default App;

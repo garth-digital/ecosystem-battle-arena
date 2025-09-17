@@ -1,0 +1,171 @@
+/* Locked horizontal frame, armour, and weapon buttons: inherit all reroll-btn and horizontal styles, only override color/opacity */
+.reroll-btn--locked.reroll-btn--horizontal {
+  /* Inherit all from .reroll-btn and .reroll-btn--horizontal */
+  color: #888 !important;
+  opacity: 0.7 !important;
+  cursor: pointer;
+}
+.coin-badge {
+  position: absolute;
+  top: -17px;
+  right: -17px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+  overflow: visible;
+  background: none !important;
+}
+.coin-badge__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #18181b;
+  border: 2.5px solid var(--color-gold);
+  box-sizing: border-box;
+  z-index: 101;
+  box-shadow: 0 0 8px 0 #000a;
+}
+.coin-badge__amount {
+  position: relative;
+  color: var(--color-gold) !important;
+  font-size: 1.1em;
+  font-weight: 700;
+  z-index: 102;
+  text-align: center;
+  margin-left: 2px;
+  pointer-events: none;
+}
+/* Shop Button Styles (reroll-btn, coin-badge, etc.) */
+
+/* Base shop button style */
+.reroll-btn {
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 3px solid #fff;
+  background: #18181b;
+  color: #fff;
+  padding: 0 8px;
+  margin: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+  position: relative;
+  overflow: visible;
+}
+
+/* Vertical (side) buttons: 64x140px */
+
+.reroll-btn--vertical {
+  width: 64px !important;
+  min-width: 64px !important;
+  max-width: 64px !important;
+  height: 100% !important;
+  flex-direction: column !important;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  border: 3px solid #fff;
+  border-radius: 6px !important;
+  background: #18181b;
+  position: relative;
+  box-shadow: none;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.reroll-btn__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 0;
+  white-space: nowrap;
+  opacity: 1;
+}
+
+.reroll-btn--locked .reroll-btn__label {
+  opacity: 0.7;
+}
+
+.reroll-btn--vertical .reroll-btn__label {
+  margin-top: 4px;
+}
+
+.reroll-btn--vertical .reroll-btn__lock-flex {
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.reroll-btn--horizontal .reroll-btn__lock-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.reroll-btn__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Horizontal (bottom) buttons: 140x64px */
+
+.reroll-btn--horizontal {
+  width: 100% !important;
+  min-height: 64px !important;
+  height: 64px !important;
+  max-height: 64px !important;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: 3px solid #fff;
+  border-radius: 6px !important;
+  background: #18181b;
+  position: relative;
+  box-shadow: none;
+  overflow: visible;
+  flex-shrink: 0;
+}
+/* Removed duplicate and broken block for .reroll-btn--locked.reroll-btn--horizontal */
+.reroll-btn--locked {
+  background: #18181b;
+  color: #888;
+  cursor: pointer;
+  border: 3px solid #fff;
+  opacity: 0.7;
+}
+
+.reroll-btn--locked--horizontal {
+  background: #18181b;
+  color: #888;
+  cursor: pointer;
+  border: 3px solid #fff;
+  opacity: 0.7;
+  height: 64px;
+}
+
+.button.reroll-btn:nth-child(11) {
+width: 64px;
+}
+

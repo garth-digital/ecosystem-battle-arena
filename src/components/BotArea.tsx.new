@@ -1,0 +1,279 @@
+import React from 'react';
+import { InventoryItem } from '../App';
+import '../styles/botArea.css';
+
+interface BotSlot {
+  type: 'weapon' | 'armour' | 'ecotech';
+  part?: InventoryItem;
+  x: number;
+  y: number;
+}
+
+interface Bot {
+  id: string;
+  name: string;
+  frameType: string;
+  maxWeight: number;
+  slots: BotSlot[];
+  rarity: string;
+  frameStats: Array<{label: string, value: number | string}>;
+}
+
+interface BotAreaProps {
+  bots: Bot[];
+  setBots: React.Dispatch<React.SetStateAction<Bot[]>>;
+  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+}
+
+const frameData = {
+  light: {
+    slots: [
+      { type: 'weapon' as const, x: 0, y: 0 },
+      { type: 'armour' as const, x: 1, y: 0 }
+    ],
+    maxWeight: 60
+  },
+  medium: {
+    slots: [
+      { type: 'weapon' as const, x: 0, y: 0 },
+      { type: 'armour' as const, x: 1, y: 0 },
+      { type: 'ecotech' as const, x: 0, y: 1 }
+    ],
+    maxWeight: 90
+  },
+  heavy: {
+    slots: [
+      { type: 'weapon' as const, x: 0, y: 0 },
+      { type: 'armour' as const, x: 1, y: 0 },
+      { type: 'weapon' as const, x: 0, y: 1 },
+      { type: 'ecotech' as const, x: 1, y: 1 }
+    ],
+    maxWeight: 120
+  }
+} as const;
+
+const createBotFromFrame = (frame: InventoryItem): Bot => {
+  const frameType = frame.name.toLowerCase().includes('heavy') ? 'heavy' 
+                 : frame.name.toLowerCase().includes('light') ? 'light'
+                 : 'medium';
+
+  return {
+    id: `bot-${Date.now()}`,
+    name: `Bot ${frame.name}`,
+    frameType,
+    maxWeight: frameData[frameType].maxWeight,
+    slots: frameData[frameType].slots.map(s => ({ ...s, part: undefined })),
+    rarity: frame.rarity,
+    frameStats: frame.stats || []
+  };
+};
+
+const BotArea: React.FC<BotAreaProps> = ({ bots, setBots, setInventory }) => {
+  const getNumericStat = (item: InventoryItem | undefined, stat: string): number => {
+    if (!item?.stats) return 0;
+    const value = item.stats.find(s => s.label === stat)?.value;
+    return typeof value === 'string' ? parseFloat(value) : (value || 0);
+  };
+
+  const calculateBotWeight = (bot: Bot) => {
+    return bot.slots.reduce((total, slot) => {
+      return total + getNumericStat(slot.part, 'WT');
+    }, 0);
+  };
+
+  const canEquipPart = (bot: Bot, part: InventoryItem, targetType: 'weapon' | 'armour' | 'ecotech') => {
+    if (part.type !== targetType) return false;
+
+    const totalWeight = calculateBotWeight(bot);
+    const partWeight = getNumericStat(part, 'WT');
+    return (totalWeight + partWeight) <= bot.maxWeight;
+  };
+
+  const handlePartDragStart = (e: React.DragEvent, bot: Bot, slotIndex: number) => {
+    const slot = bot.slots[slotIndex];
+    if (!slot.part) return;
+    
+    e.dataTransfer.setData('application/json', JSON.stringify(slot.part));
+    // Remove the part from the bot and add to inventory on next frame
+    setTimeout(() => {
+      setBots(prev => prev.map(b => {
+        if (b.id === bot.id) {
+          const newSlots = [...b.slots];
+          newSlots[slotIndex] = { ...slot, part: undefined };
+          return { ...b, slots: newSlots };
+        }
+        return b;
+      }));
+      setInventory(prev => [...prev, slot.part!]);
+    }, 0);
+  };
+
+  return (
+    <div className="bot-area-section">
+      <div className="bot-area">
+        {bots.map((bot, botIndex) => {
+          const weight = calculateBotWeight(bot);
+          const weightClass = weight <= bot.maxWeight * 0.5 ? '' 
+                          : weight <= bot.maxWeight * 0.8 ? 'warning' 
+                          : 'danger';
+          
+          return (
+            <div
+              className="bot-card bot-card--universal"
+              key={bot.id}
+              onDragOver={(e) => {
+                const data = e.dataTransfer.getData('application/json');
+                if (data) {
+                  try {
+                    const item: InventoryItem = JSON.parse(data);
+                    if (item.type === 'frame') {
+                      e.preventDefault();
+                      e.currentTarget.classList.add('bot-card--drag-over');
+                    } else {
+                      const emptySlot = bot.slots.find(s => s.type === item.type && !s.part);
+                      if (emptySlot && canEquipPart(bot, item, item.type)) {
+                        e.preventDefault();
+                        e.currentTarget.classList.add('bot-card--drag-over');
+                      }
+                    }
+                  } catch {}
+                }
+              }}
+              onDragLeave={(e) => {
+                e.currentTarget.classList.remove('bot-card--drag-over');
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.currentTarget.classList.remove('bot-card--drag-over');
+                const data = e.dataTransfer.getData('application/json');
+                if (!data) return;
+                
+                try {
+                  const item: InventoryItem = JSON.parse(data);
+                  
+                  // Handle frame drops - create new bot
+                  if (item.type === 'frame') {
+                    const newBot = createBotFromFrame(item);
+                    setBots(prev => [...prev, newBot]);
+                    setInventory(prev => prev.filter(i => i.id !== item.id));
+                    return;
+                  }
+                  
+                  // Handle part drops into existing bot
+                  if (!['weapon', 'armour', 'ecotech'].includes(item.type)) return;
+                  
+                  const slotIndex = bot.slots.findIndex(s => s.type === item.type && !s.part);
+                  if (slotIndex !== -1 && canEquipPart(bot, item, item.type)) {
+                    setInventory(prev => prev.filter(i => i.id !== item.id));
+                    setBots(prev => prev.map(b => {
+                      if (b.id === bot.id) {
+                        const newSlots = [...b.slots];
+                        newSlots[slotIndex] = { ...newSlots[slotIndex], part: item };
+                        return { ...b, slots: newSlots };
+                      }
+                      return b;
+                    }));
+                  }
+                } catch {}
+              }}
+            >
+              <div className="bot-card__weight-container">
+                <div className={`bot-card__weight bot-card__weight--${weightClass}`}>
+                  <span role="img" aria-label="weight" style={{marginRight: 2}}>⚖️</span>
+                  {weight}/{bot.maxWeight}
+                </div>
+              </div>
+              <div className="bot-card__weight-gauge">
+                <div 
+                  className={`bot-card__weight-gauge-fill bot-card__weight-gauge-fill--${weightClass}`}
+                  style={{
+                    height: `${(weight / bot.maxWeight * 100) || 0}%`
+                  }}
+                />
+              </div>
+              <div className="bot-card__name">{bot.name}</div>
+              <div className="bot-card__parts-grid" style={{
+                gridTemplateRows: `repeat(${Math.ceil(bot.slots.length / 2)}, 38px)`,
+                gridTemplateColumns: "repeat(2, 38px)"
+              }}>
+                {bot.slots.map((slot, slotIndex) => {
+                  const hasPart = !!slot.part;
+                  let background = '#18181b';
+                  let labelBg = 'var(--color-common)';
+                  let labelColor = '#232323';
+                  
+                  if (hasPart && slot.part) {
+                    const partType = slot.part.type;
+                    if (partType === 'weapon') {
+                      background = 'var(--color-weapon)';
+                      labelBg = 'var(--color-weapon)';
+                    } else if (partType === 'armour') {
+                      background = 'var(--color-armor)';
+                      labelBg = 'var(--color-armor)';
+                    } else if (partType === 'ecotech') {
+                      background = 'var(--color-ecotech)';
+                      labelBg = 'var(--color-ecotech)';
+                    }
+                    if (slot.part.rarity === 'common') {
+                      labelColor = '#232323';
+                    }
+                  }
+
+                  return (
+                    <div
+                      key={`${bot.id}-${slotIndex}`}
+                      className={`bot-card__part-slot bot-card__part-slot--${slot.type}`}
+                      style={{
+                        border: hasPart ? '2px solid var(--color-gold)' : '2px dashed #444',
+                        background,
+                        color: labelColor,
+                        cursor: hasPart ? 'pointer' : 'default',
+                        gridColumn: slot.x + 1,
+                        gridRow: slot.y + 1
+                      }}
+                      draggable={hasPart}
+                      onDragStart={(e) => handlePartDragStart(e, bot, slotIndex)}
+                      onClick={() => {
+                        if (hasPart) {
+                          setBots(prev => prev.map(b => {
+                            if (b.id === bot.id) {
+                              const newSlots = [...b.slots];
+                              const part = newSlots[slotIndex].part!;
+                              newSlots[slotIndex] = { ...newSlots[slotIndex], part: undefined };
+                              setInventory(prev => [...prev, part]);
+                              return { ...b, slots: newSlots };
+                            }
+                            return b;
+                          }));
+                        }
+                      }}
+                    >
+                      {hasPart ? (
+                        <div className="bot-card__part-content">
+                          <div className="bot-card__part-type-label inventory-type-label" style={{
+                            background: labelBg,
+                            color: labelColor
+                          }}>
+                            {slot.type}
+                          </div>
+                          <div className="bot-card__part-name">{slot.part!.name}</div>
+                          <div className="bot-card__part-weight">
+                            <span role="img" aria-label="weight">⚖️</span> {getNumericStat(slot.part, 'WT')}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bot-card__part-empty">+</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default BotArea;

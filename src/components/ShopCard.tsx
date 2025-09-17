@@ -1,4 +1,5 @@
 import React from 'react';
+import './colors.css';
 
 export type ShopCardProps = {
   id?: string;
@@ -18,10 +19,11 @@ export type ShopCardProps = {
   small?: boolean;
 };
 
+
 const rarityColors = {
-  common: '#bfcfff',
-  rare: '#a259ff',
-  mythic: '#ffe066',
+  common: 'var(--color-border-common)',
+  rare: 'var(--color-border-rare)',
+  mythic: 'var(--color-border-mythic)',
 };
 
 
@@ -42,8 +44,25 @@ export const ShopCard: React.FC<ShopCardProps> = ({
   small,
 }) => (
   <div
-    className={`shop-card${highlight ? ' shop-card--selected' : ''}${small ? ' shop-card--small' : ''}`}
-    style={{ borderColor: rarityColors[rarity], cursor: onClick ? 'pointer' : undefined }}
+    className={`shop-card shop-card--universal${highlight ? ' shop-card--selected' : ''}${small ? ' shop-card--small' : ''} shop-card--${rarity}`}
+    style={{
+      borderColor: rarityColors[rarity],
+      cursor: onClick ? 'pointer' : undefined,
+      background:
+        type === 'weapon' ? 'var(--color-weapon)' :
+        type === 'armour' ? 'var(--color-armor)' :
+        type === 'ecotech' ? 'var(--color-ecotech)' :
+        type === 'frame' ? 'var(--color-bot)' :
+        'var(--color-common)',
+      color: rarity === 'common' ? '#232323' : '#fff',
+      aspectRatio: '1/1',
+      minWidth: small ? '56px' : '180px',
+      minHeight: small ? '56px' : '180px',
+      maxWidth: small ? '56px' : '180px',
+      maxHeight: small ? '56px' : '180px',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
+    }}
     onClick={onClick}
     draggable={draggable}
     onDragStart={onDragStart}
@@ -51,10 +70,18 @@ export const ShopCard: React.FC<ShopCardProps> = ({
     role="button"
   >
     <div className="shop-card__header">
-      <span className="shop-card__type">{type}</span>
+      <span className="shop-card__type-label inventory-type-label" style={{
+        background:
+          type === 'weapon' ? 'var(--color-weapon)' :
+          type === 'armour' ? 'var(--color-armor)' :
+          type === 'ecotech' ? 'var(--color-ecotech)' :
+          type === 'frame' ? 'var(--color-bot)' :
+          'var(--color-common)',
+        color: type === 'frame' ? '#fff' : '#232323',
+      }}>{type}</span>
       <span className="shop-card__rarity" style={{ color: rarityColors[rarity] }}>{rarity}</span>
       <span className="shop-card__cost">
-        <span className={`currency currency--${currency}`}></span> {cost}
+        <span className="gold-icon" role="img" aria-label="gold" style={{color:'var(--color-gold)',fontWeight:700}}>●</span> {cost}
       </span>
     </div>
     <div className="shop-card__image">
@@ -72,6 +99,9 @@ export const ShopCard: React.FC<ShopCardProps> = ({
         ))}
       </div>
       {size && <div className="shop-card__size">{size}</div>}
+      <div className="shop-card__weight-box">
+        <span role="img" aria-label="weight" style={{fontSize:'1em',verticalAlign:'middle'}}>⚖️</span> {stats.find(s => s.label === 'WT')?.value ?? 0}
+      </div>
     </div>
   </div>
 );

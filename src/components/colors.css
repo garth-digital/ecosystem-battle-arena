@@ -1,0 +1,14 @@
+/* Universal color variables */
+:root {
+  --color-gold: #959730;
+  --color-weapon: #ff9800;
+  --color-armor: #2196f3;
+  --color-bot: #232323;
+  --color-ecotech: #43a047;
+  --color-common: #fff;
+  --color-rare: #a259ff;
+  --color-mythic: #ffe066;
+  --color-border-common: #fff;
+  --color-border-rare: #a259ff;
+  --color-border-mythic: #ffe066;
+}
